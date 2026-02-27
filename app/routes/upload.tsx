@@ -29,11 +29,11 @@ const Upload = () => {
         const imageFile = await convertPdfToImage(file);
         if(!imageFile.file) return setStatusText("Failed to convert pdf to image.");
 
-        setStatusText("Uploading the image")
+        setStatusText("Uploading the image...")
         const uploadedImage = await fs.upload([imageFile.file]);
         if(!uploadedImage) return setStatusText("Failed to upload image.");
 
-        setStatusText("Preparing data")
+        setStatusText("Preparing data...")
         const uuid = generateUUID();
 
         const data = {
@@ -46,6 +46,7 @@ const Upload = () => {
             feedback: ''
         }
         await kv.set(`resume:${uuid}`, JSON.stringify(data))
+        setStatusText("Getting AI analysis...")
         const feedback = await ai.feedback(
             uploadedFile.path,
             prepareInstructions({jobTitle, jobDescription}),
@@ -55,8 +56,8 @@ const Upload = () => {
         const feedbackText = typeof feedback.message.content === "string" ? feedback.message.content : feedback.message.content[0].text;
         data.feedback = JSON.parse(feedbackText)
         const res = await kv.set(`resume:${uuid}`, JSON.stringify(data))
-        console.log(data)
         setStatusText("Analysis complete. Redirecting.")
+        navigate(`/resume/${uuid}`)
     }
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -82,7 +83,7 @@ const Upload = () => {
                     {isProcessing ? (
                         <>
                             <h2>{statusText}</h2>
-                            <img src={"/images/resume-scan.gif"} className={"w-full"}/>
+                            <img src={"/images/resume-scan.gif"} className={"w-full"} alt={"scanning resume"}/>
                         </>
                     ) : (
                         <h2> Drop your resume for ATS score and improvement tips.</h2>
