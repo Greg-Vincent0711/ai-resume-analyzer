@@ -79,7 +79,7 @@ const Upload = () => {
             <Navbar/>
             <section className="main-section">
                 <div className={"page-heading py-16"}>
-                    <h1>Smart feedback for your dream back</h1>
+                    <h1>Smart feedback for your dream job</h1>
                     {isProcessing ? (
                         <>
                             <h2>{statusText}</h2>
