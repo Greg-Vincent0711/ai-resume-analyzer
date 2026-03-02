@@ -56,7 +56,7 @@ const ATS = ({
                 ))}
                 <p className="text-lg text-gray-500">
                     Want a better score? Improve your resume by applying the suggestions
-                    listed below.
+                    listed.
                 </p>
             </div>
         </div>

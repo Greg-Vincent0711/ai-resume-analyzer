@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react'
 import {Link, useNavigate, useParams} from "react-router";
 import {usePuterStore} from "../../public/lib/puter";
 import Summary from "~/components/Summary";
+import ATS from "~/components/ATS";
+import Details from "~/components/Details";
 
 export const meta = () => (
     [
@@ -34,7 +36,7 @@ const Resume = () => {
          * **/
         const loadResume = async () => {
             // trouble shoot the resume portion - might be wifi
-            const resume = await kv.get(`resume/${id}`);
+            const resume = await kv.get(`resume:${id}`);
             if(!resume) return setStatus("Failed to retrieve resume. Either puter is down or it doesn't exist.")
 
             const data = JSON.parse(resume);
@@ -58,7 +60,7 @@ const Resume = () => {
     return (
         <main className={"pt-0!"}>
             <nav className={"resume-nav"}>
-                <Link to={"/homepage"} className={"back-button"}>
+                <Link to={"/"} className={"back-button"}>
                     <img src={"/icons/back.svg"} alt={"logo"} className={"w-2.5 h-2.5"} />
                     <span className={"text-grey-800 text-sm font-semibold"}>Back to Homepage</span>
                 </Link>
@@ -83,8 +85,8 @@ const Resume = () => {
                     {feedback ? (
                         <div className={"flex flex-col gap-8 animate-in fade-in duration-1000"}>
                             <Summary feedback={feedback}/>
-                            {/*<ATS score={feedback.ats.score || 0} suggestions={feedback.ATS.tips || []}/>*/}
-                            {/*<Details feedback={feedback}/>*/}
+                            <ATS score={feedback.ATS.score || 0} suggestions={feedback.ATS.tips || []}/>
+                            <Details feedback={feedback}/>
                         </div>
                     ) : (
                         <img className="w-full" src={"/images/resume-scan-2.gif"}/>
