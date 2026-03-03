@@ -5,6 +5,7 @@ import {usePuterStore} from "../../public/lib/puter";
 import {Link, useLocation, useNavigate} from "react-router";
 import {useEffect, useState} from "react";
 
+// good to know you can define metadata like this
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "Kamixo Test App" },
@@ -12,22 +13,20 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
+
 export default function Home() {
     const {auth, kv} = usePuterStore();
     const [resumes, setResumes] = useState<Resume[]>([]);
     const [loadingResumes, setLoadingResumes] = useState<boolean>(false);
-
-    // current location of the user, from react router
-    const location = useLocation();
     // next location they'd like to go to
     const navigate = useNavigate();
-    // redirection
+    // good routing trick with authentication
     useEffect(() => {
         if(!auth.isAuthenticated){
-
+            // navigate to an auth page
+            // then to the homepages
             navigate("/auth?next=/")
         }
-        // when these two states change
         // check if the user can go to that page
     }, [auth.isAuthenticated])
 
@@ -62,6 +61,7 @@ export default function Home() {
                     <img alt="resume scan image" src={"/images/resume-scan-2.gif"} className={"w-50"}/>
                 </div>
             )}
+
           {!loadingResumes && resumes.length > 0 && (
               <div className="resumes-section">
                   {resumes.map((resume, index) => (

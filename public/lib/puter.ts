@@ -1,5 +1,9 @@
 import { create } from "zustand";
 
+/**
+ * define an interface
+ * then use with zustand
+ */
 declare global {
     interface Window {
         puter: {
@@ -100,6 +104,7 @@ interface PuterStore {
 const getPuter = (): typeof window.puter | null =>
     typeof window !== "undefined" && window.puter ? window.puter : null;
 
+// zustand store returns a setter and getter to update state custom to application logic
 export const usePuterStore = create<PuterStore>((set, get) => {
     const setError = (msg: string) => {
         set({
@@ -117,6 +122,7 @@ export const usePuterStore = create<PuterStore>((set, get) => {
         });
     };
 
+
     const checkAuthStatus = async (): Promise<boolean> => {
         const puter = getPuter();
         if (!puter) {
@@ -127,9 +133,11 @@ export const usePuterStore = create<PuterStore>((set, get) => {
         set({ isLoading: true, error: null });
 
         try {
+
             const isSignedIn = await puter.auth.isSignedIn();
             if (isSignedIn) {
                 const user = await puter.auth.getUser();
+
                 set({
                     auth: {
                         user,
@@ -411,6 +419,7 @@ export const usePuterStore = create<PuterStore>((set, get) => {
         }
         return puter.kv.flush();
     };
+
 
     return {
         isLoading: true,

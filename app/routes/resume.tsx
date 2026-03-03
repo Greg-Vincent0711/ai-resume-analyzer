@@ -30,24 +30,19 @@ const Resume = () => {
     }, [isLoading])
 
     useEffect(() => {
-        /**
-         * dummy resume data
-         * Full stack development with react, C# and AWS. Good understanding of UI/UX design, Swagger and OpenAPI specification design and implementation. Familiarity with agile processes, ability to wear multiple hats.
-         * **/
         const loadResume = async () => {
-            // trouble shoot the resume portion - might be wifi
             const resume = await kv.get(`resume:${id}`);
             if(!resume) return setStatus("Failed to retrieve resume. Either puter is down or it doesn't exist.")
 
+            // grab resume data from cloud
             const data = JSON.parse(resume);
-            // files from puter cloud storage are returned as blob data
             const resumeBlob = await fs.read(data.resumePath)
             if(!resumeBlob) return setStatus("Could not read data from resume.")
             const pdfBlob = new Blob([resumeBlob], { type: "application/pdf" });
             const resumeURL = URL.createObjectURL(pdfBlob);
-            console.log(resumeURL);
             setResumeURL(resumeURL);
 
+            // grab image data from cloud
             const imageBlob = await fs.read(data.imagePath)
             if(!imageBlob) return;
             const imageURL = URL.createObjectURL(imageBlob);
@@ -62,16 +57,18 @@ const Resume = () => {
             <nav className={"resume-nav"}>
                 <Link to={"/"} className={"back-button"}>
                     <img src={"/icons/back.svg"} alt={"logo"} className={"w-2.5 h-2.5"} />
+                    {/* span doesn't take up more width for content than necessary */}
                     <span className={"text-grey-800 text-sm font-semibold"}>Back to Homepage</span>
                 </Link>
             </nav>
             <div className={"flex flex-row w-full max-lg:flex-col-reverse"}>
                 <section className={"feedback-section bg-[url'/images/bg-small.svg) bg-cover h-screen sticky top-0 items-center justify-center"}>
-                    {status}
+                    {/* status tracks errors if !imageURL or !resumeURL*/} {status}
                     {imageURL && resumeURL && (
                         <div className={"animate-in fade-in duration-1000 gradient-border max-sm:m-0 h[90%] max-wxl:h-fit w-fit"}>
                             <a href={resumeURL} target={"_blank"}>
                                 <img src={imageURL}
+                                     alt={"resume img url"}
                                      className={"w-full h-full object-contain rounded-2xl"}
                                      title={"resume"}/>
                             </a>
@@ -89,7 +86,9 @@ const Resume = () => {
                             <Details feedback={feedback}/>
                         </div>
                     ) : (
-                        <img className="w-full" src={"/images/resume-scan-2.gif"}/>
+                        <img alt="fallback when no feedback is found"
+                             className="w-full"
+                             src={"/images/resume-scan-2.gif"}/>
                     )}
                 </section>
             </div>

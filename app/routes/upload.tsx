@@ -1,4 +1,4 @@
-import {type FormEvent, useState} from 'react'
+import {type FormEvent, type SyntheticEvent, useState} from 'react'
 import Navbar from "~/components/Navbar";
 import FileUploader from "~/components/FileUploader";
 import {usePuterStore} from "../../public/lib/puter";
@@ -45,6 +45,7 @@ const Upload = () => {
             jobDescription,
             feedback: ''
         }
+
         await kv.set(`resume:${uuid}`, JSON.stringify(data))
         setStatusText("Getting AI analysis...")
         const feedback = await ai.feedback(
@@ -55,12 +56,12 @@ const Upload = () => {
         if(!feedback) return setStatusText("Error failed to analyze resume.");
         const feedbackText = typeof feedback.message.content === "string" ? feedback.message.content : feedback.message.content[0].text;
         data.feedback = JSON.parse(feedbackText)
-        const res = await kv.set(`resume:${uuid}`, JSON.stringify(data))
         setStatusText("Analysis complete. Redirecting.")
+        // custom page for a specific resume
         navigate(`/resume/${uuid}`)
     }
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
         e.preventDefault();
         const form = e.currentTarget.closest("form");
         if (!form) return;

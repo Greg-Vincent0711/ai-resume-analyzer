@@ -16,7 +16,6 @@ const Auth = () => {
     const next = location.search.split("next=")[1];
     const navigate = useNavigate();
 
-    // redirection
     useEffect(() => {
         if(auth.isAuthenticated){
             navigate(next)
@@ -33,12 +32,14 @@ const Auth = () => {
                         <h2> Login to continue your Job Journey </h2>
                     </div>
                     <div>
+                        {/* if we are loading */}
                         {isLoading ? (
                             <button className={"auth-button animate-pulse"}>
                                 <p>Signing you in...</p>
                             </button>
                         ) : (
                             <>
+                                {/* if not loading, we must either be authenticated or not */}
                                 {auth.isAuthenticated ? (
                                     <button className={"auth-button"} onClick={auth.signOut}>
                                         <p>Logout</p>
